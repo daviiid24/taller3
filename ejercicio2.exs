@@ -1,14 +1,5 @@
-# Ejercicio 2 - Procesamiento de un CSV de productos
-#
-# IMPORTANTE: no se abre con doble clic (eso solo muestra el código en el Bloc de notas).
-# Se ejecuta en la terminal de VS Code, ubicado en esta carpeta, con:
-#   elixir ejercicio2_inventario.exs
-# El programa pregunta los datos y muestra el resultado en pantalla.
-#
-# Alternativa sin preguntas:
-#   elixir ejercicio2_inventario.exs productos_prueba.csv      -> usa otro CSV
-#   elixir ejercicio2_inventario.exs productos_prueba.csv sal  -> deja inventario.txt y errores.txt en la carpeta "sal"
-#
+# Ejercicio 2 Procesamiento de un CSV de productos
+
 # Genera:
 #   inventario.txt -> valor total, producto más caro, más barato y lista ordenada por valor
 #   errores.txt    -> una línea por cada registro inválido, con número de línea y motivo
@@ -30,7 +21,6 @@ defmodule Inventario do
     mostrar_archivos(resultado, carpeta)
   end
 
-  # Solo se imprimen los archivos si esta ejecución sí los generó
   defp mostrar_archivos({:ok, _}, carpeta) do
     mostrar_archivo(Path.join(carpeta, "inventario.txt"))
     mostrar_archivo(Path.join(carpeta, "errores.txt"))
@@ -38,7 +28,6 @@ defmodule Inventario do
 
   defp mostrar_archivos(_, _), do: :ok
 
-  # Pregunta por consola cuando el programa se ejecuta sin argumentos
   defp pedir_datos do
     IO.puts("=== Ejercicio 2: inventario de productos ===")
     ruta = pedir("Archivo CSV (Enter para usar productos.csv): ", @entrada)
@@ -49,7 +38,6 @@ defmodule Inventario do
     {ruta, carpeta}
   end
 
-  # ---------- Flujo principal ----------
 
   defp procesar(ruta_csv, carpeta) do
     if File.regular?(ruta_csv) do
@@ -72,9 +60,7 @@ defmodule Inventario do
     end
   end
 
-  # ---------- Lectura y conversión ----------
 
-  # Devuelve {productos, errores}. Cada producto es un mapa y cada error es {numero_de_linea, motivo}.
   defp leer_productos(ruta) do
     resultados =
       ruta
@@ -89,8 +75,7 @@ defmodule Inventario do
     {productos, errores}
   end
 
-  # Cada paso devuelve {:ok, ...} o {:error, motivo}. with se detiene en el primer error
-  # y ese error es lo que devuelve la función.
+
   defp convertir_linea(linea) do
     campos = separar_campos(String.trim(linea))
 
@@ -128,10 +113,6 @@ defmodule Inventario do
     end
   end
 
-  # ---------- Separar una línea CSV en campos ----------
-  # String.split(linea, ",") no sirve porque un nombre entre comillas puede tener comas:
-  #   "Monitor 27 pulgadas, curvo",300,15
-  # Se recorre la línea carácter por carácter, recordando si estamos dentro de comillas.
 
   defp separar_campos(linea) do
     linea
@@ -140,27 +121,22 @@ defmodule Inventario do
     |> Enum.map(&String.trim/1)
   end
 
-  # separar(caracteres, campos_terminados, campo_actual, dentro_de_comillas?)
-
-  # Se acabó la línea: el campo actual es el último
   defp separar([], campos, actual, _dentro), do: Enum.reverse([actual | campos])
 
-  # Una comilla abre o cierra el modo "dentro de comillas" y no se copia al campo
   defp separar(["\"" | resto], campos, actual, dentro) do
     separar(resto, campos, actual, not dentro)
   end
 
-  # Una coma FUERA de comillas termina el campo actual
+
   defp separar(["," | resto], campos, actual, false) do
     separar(resto, [actual | campos], "", false)
   end
 
-  # Cualquier otro carácter (incluida una coma dentro de comillas) se agrega al campo actual
   defp separar([caracter | resto], campos, actual, dentro) do
     separar(resto, campos, actual <> caracter, dentro)
   end
 
-  # ---------- Reporte ----------
+
 
   defp valor_inventario(producto), do: producto.precio * producto.cantidad
 
@@ -169,7 +145,6 @@ defmodule Inventario do
     mas_caro = Enum.max_by(productos, fn producto -> producto.precio end)
     mas_barato = Enum.min_by(productos, fn producto -> producto.precio end)
 
-    # De mayor a menor valor; si hay empate, por nombre
     lista =
       productos
       |> Enum.sort_by(fn producto -> {-valor_inventario(producto), producto.nombre} end)
@@ -191,10 +166,8 @@ defmodule Inventario do
     """
   end
 
-  # Muestra un número con dos decimales, por ejemplo 12000.0 -> "12000.00"
   defp dinero(valor), do: :erlang.float_to_binary(valor * 1.0, decimals: 2)
 
-  # ---------- Errores ----------
 
   defp guardar_errores([], ruta), do: File.write!(ruta, "No se encontraron líneas inválidas.\n")
 
@@ -207,15 +180,10 @@ defmodule Inventario do
     File.write!(ruta, texto)
   end
 
-  # ---------- Mostrar resultado ----------
 
   defp mostrar_resultado({:ok, mensaje}), do: IO.puts(mensaje)
   defp mostrar_resultado({:error, motivo}), do: IO.puts("Error: #{motivo}")
 
-  # ---------- Entrada por consola y salida por pantalla ----------
-
-  # Muestra el mensaje, lee lo que escribe el usuario y, si solo presiona Enter,
-  # devuelve el valor por defecto. También quita comillas por si se arrastró la ruta.
   defp pedir(mensaje, valor_por_defecto) do
     case IO.gets(mensaje) do
       :eof ->
@@ -227,7 +195,6 @@ defmodule Inventario do
     end
   end
 
-  # Imprime el contenido de un archivo, salvo que sea demasiado grande para la pantalla
   defp mostrar_archivo(ruta) do
     if File.regular?(ruta) do
       if File.stat!(ruta).size <= @limite_pantalla do
