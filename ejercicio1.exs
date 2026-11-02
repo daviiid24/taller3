@@ -17,7 +17,8 @@
 defmodule Frecuencia do
   @entrada Path.join(__DIR__, "texto.txt")
   @carpeta_salida __DIR__
-  @limite_pantalla 20_000   # bytes; archivos más grandes no se imprimen
+  # bytes; archivos más grandes no se imprimen
+  @limite_pantalla 20_000
 
   def main do
     {entrada, carpeta} =
@@ -27,16 +28,29 @@ defmodule Frecuencia do
         _ -> pedir_rutas()
       end
 
-    resultado = procesar(entrada, carpeta)
+    {tiempo_microsegs, resultado} = :timer.tc(fn -> procesar(entrada, carpeta) end)
+
     mostrar_resultado(resultado)
+
+    # Imprimimos el tiempo en pantalla
+    tiempo_segs = tiempo_microsegs / 1_000_000
+    IO.puts("Tiempo de ejecución: #{tiempo_segs} segundos")
+
     mostrar_archivos(resultado, carpeta)
+
+    IO.gets(
+      "\nProceso terminado. Revisa el Administrador de tareas y presiona Enter para salir..."
+    )
   end
 
   # Pregunta por consola cuando el programa se ejecuta sin argumentos
   defp pedir_rutas do
     IO.puts("=== Ejercicio 1: frecuencia de palabras (todo en memoria) ===")
     entrada = pedir("Archivo de entrada (Enter para usar texto.txt): ", @entrada)
-    carpeta = pedir("Carpeta de salida (Enter para usar la carpeta del programa): ", @carpeta_salida)
+
+    carpeta =
+      pedir("Carpeta de salida (Enter para usar la carpeta del programa): ", @carpeta_salida)
+
     {entrada, carpeta}
   end
 
@@ -127,8 +141,6 @@ defmodule Frecuencia do
 
   # ---------- Entrada por consola y salida por pantalla ----------
 
-  # Muestra el mensaje, lee lo que escribe el usuario y, si solo presiona Enter,
-  # devuelve el valor por defecto. También quita comillas por si se arrastró la ruta.
   defp pedir(mensaje, valor_por_defecto) do
     case IO.gets(mensaje) do
       :eof ->

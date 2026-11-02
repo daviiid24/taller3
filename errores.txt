@@ -1,0 +1,6 @@
+Línea 7: se esperaban 3 campos y hay 2
+Línea 8: el precio no es un número ("veinticinco")
+Línea 9: el precio es negativo (-300)
+Línea 10: el nombre está vacío
+Línea 11: la cantidad no es un número entero ("diez")
+Línea 12: la cantidad no es un número entero ("")

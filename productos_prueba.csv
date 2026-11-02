@@ -1,16 +1,12 @@
 nombre,precio,cantidad
 Laptop,1200,10
 Mouse,25,500
+Teclado,75,30
+Monitor,300,15
 "Monitor 27 pulgadas, curvo",300,15
-Teclado,75.50,30
-Cable HDMI,12.99,200
-Webcam,59.90
-Impresora,abc,5
-Parlante,-40,12
-,15,8
-Audifonos,35,diez
-Disco duro,80.5,2.5
-
-Hub USB,20,5,extra
-"Cámara,100,3
-Silla,150,-2
+Teclado,75
+Mouse,veinticinco,500
+Monitor,-300,15
+,1200,10
+Cable,15.5,diez
+"Silla Gamer, Roja",150.50,

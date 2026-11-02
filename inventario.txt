@@ -1,0 +1,11 @@
+=== Reporte de inventario ===
+Valor total del inventario: 35750.00
+Producto más caro: Laptop (1200.00)
+Producto más barato: Mouse (25.00)
+
+Productos ordenados por valor en inventario (mayor a menor):
+1. Mouse: 12500.00 (25.00 x 500)
+2. Laptop: 12000.00 (1200.00 x 10)
+3. Monitor: 4500.00 (300.00 x 15)
+4. Monitor 27 pulgadas, curvo: 4500.00 (300.00 x 15)
+5. Teclado: 2250.00 (75.00 x 30)
